@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Insert title here</title>
+</head>
+<body>
+  <table th:object="${informationResult}">
+    <tr>
+      <td>ユーザーID</td>
+      <td th:text="*{userID}"></td>
+    </tr>
+    <tr>
+      <td>名前（姓）</td>
+      <td th:text="*{firstName}"></td>
+    </tr>
+    <tr>
+      <td>名前（名）</td>
+      <td th:text="*{lastName}"></td>
+    </tr>
+    <tr>
+      <td>作成日時</td>
+      <td th:text="*{createdAt}"></td>
+    </tr>
+    <tr>
+      <td>更新日時</td>
+      <td th:text="*{modifiedAt}"></td>
+    </tr>
+    <tr>
+      <td>有効</td>
+      <td><input type="checkbox" th:field="*{validUser}" disabled/></td>
+    </tr>
+  </table>
+</body>
+</html>

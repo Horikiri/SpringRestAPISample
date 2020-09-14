@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Insert title here</title>
+</head>
+<body>
+  <div>
+    <table>
+      <thead>
+        <tr>
+          <th>ユーザーID</th>
+          <th>名前</th>
+          <th>作成日時</th>
+          <th>更新日時</th>
+          <th>有効</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="informationResult:${informationResultList}" th:object="${informationResult}">
+          <td th:text="*{userID}"></td>
+          <td th:text="|*{firstName} *{lastName}|"></td>
+          <td th:text="*{createdAt}"></td>
+          <td th:text="*{modifiedAt}"></td>
+          <td th:text="*{validUser} ? '○' : ''"></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>
