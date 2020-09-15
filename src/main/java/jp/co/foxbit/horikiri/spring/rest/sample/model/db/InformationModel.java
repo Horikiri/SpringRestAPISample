@@ -1,8 +1,6 @@
-package jp.co.foxbit.horikiri.spring.rest.sample.model.result;
+package jp.co.foxbit.horikiri.spring.rest.sample.model.db;
 
-import jp.co.foxbit.horikiri.spring.rest.sample.model.db.InformationModel;
-
-public class InformationResult {
+public class InformationModel {
 
     private String userID;
 
@@ -64,11 +62,11 @@ public class InformationResult {
         this.validUser = validUser;
     }
 
-    public InformationResult() {
-
+    public InformationModel() {
+        
     }
-
-    public InformationResult(String userID, String firstName, String lastName, String createdAt, String modifiedAt,
+    
+    public InformationModel(String userID, String firstName, String lastName, String createdAt, String modifiedAt,
             boolean validUser) {
 
         this.userID = userID;
@@ -77,15 +75,5 @@ public class InformationResult {
         this.createdAt = createdAt;
         this.modifiedAt = modifiedAt;
         this.validUser = validUser; 
-    }
-
-    public InformationResult(InformationModel informationMmodel) {
-
-        this.userID = informationMmodel.getUserID();
-        this.firstName = informationMmodel.getFirstName();
-        this.lastName = informationMmodel.getLastName();
-        this.createdAt = informationMmodel.getCreatedAt();
-        this.modifiedAt = informationMmodel.getModifiedAt();
-        this.validUser = informationMmodel.getValidUser(); 
     }
 }

@@ -41,3 +41,4 @@ bin/main/jp/co/foxbit/horikiri/spring/rest/sample/controller/api/InformationRest
 bin/main/jp/co/foxbit/horikiri/spring/rest/sample/SpringRestApiSampleApplication.class
 bin/main/jp/co/foxbit/horikiri/spring/rest/sample/InformationController.class
 bin/main/application.properties
+bin/
