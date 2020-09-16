@@ -46,9 +46,16 @@ public class InformationService {
 
     public void createInformation(InformationForm informationForm) {
 
-        this.informationModels.put(informationForm.getUserID(),
-                new InformationModel(informationForm.getUserID(), informationForm.getFirstName(),
-                        informationForm.getLastName(), informationForm.getCreatedAt(), informationForm.getModifiedAt(),
-                        informationForm.getValidUser()));
+        this.informationModels.put(informationForm.getUserID(), new InformationModel(informationForm));
+    }
+
+    public void deleteInformation(String userID) {
+
+        this.informationModels.remove(userID);
+    }
+
+    public void updateInformation(InformationForm informationForm) {
+
+        this.informationModels.replace(informationForm.getUserID(), new InformationModel(informationForm));
     }
 }

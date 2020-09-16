@@ -41,4 +41,16 @@ public class InformationRestController {
 
         informationService.createInformation(informationForm);
     }
+
+    @RequestMapping(value = "/information/api/update", method = RequestMethod.PUT)
+    public void updateInformation(@RequestBody InformationForm informationForm) {
+
+        informationService.createInformation(informationForm);
+    }
+
+    @RequestMapping(value = "/information/api/delete/{userID}", method = RequestMethod.DELETE)
+    public void deleteInformation(@PathVariable String userID) {
+
+        informationService.deleteInformation(userID);
+    }
 }

@@ -1,5 +1,7 @@
 package jp.co.foxbit.horikiri.spring.rest.sample.model.db;
 
+import jp.co.foxbit.horikiri.spring.rest.sample.model.form.InformationForm;
+
 public class InformationModel {
 
     private String userID;
@@ -65,7 +67,7 @@ public class InformationModel {
     public InformationModel() {
         
     }
-    
+
     public InformationModel(String userID, String firstName, String lastName, String createdAt, String modifiedAt,
             boolean validUser) {
 
@@ -75,5 +77,15 @@ public class InformationModel {
         this.createdAt = createdAt;
         this.modifiedAt = modifiedAt;
         this.validUser = validUser; 
+    }
+
+    public InformationModel(InformationForm informationForm) {
+
+        this.userID = informationForm.getUserID();
+        this.firstName = informationForm.getFirstName();
+        this.lastName = informationForm.getLastName();
+        this.createdAt = informationForm.getCreatedAt();
+        this.modifiedAt = informationForm.getModifiedAt();
+        this.validUser = informationForm.getValidUser(); 
     }
 }
