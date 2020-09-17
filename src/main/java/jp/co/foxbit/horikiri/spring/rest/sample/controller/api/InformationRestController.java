@@ -10,47 +10,47 @@ import org.springframework.web.bind.annotation.RestController;
 
 import jp.co.foxbit.horikiri.spring.rest.sample.model.form.InformationForm;
 import jp.co.foxbit.horikiri.spring.rest.sample.model.result.InformationResult;
-import jp.co.foxbit.horikiri.spring.rest.sample.service.InformationService;
+import jp.co.foxbit.horikiri.spring.rest.sample.service.api.InformationRestService;
 
 @RestController
 public class InformationRestController {
 
 //    @Autowired
-//    InformationService informationService;
-    private final InformationService informationService;
+//    InformationService informationRestService;
+    private final InformationRestService informationRestService;
 
-    public InformationRestController(InformationService informationService) {
+    public InformationRestController(InformationRestService informationRestService) {
 
-        this.informationService = informationService;
+        this.informationRestService = informationRestService;
     }
 
     @RequestMapping(value = "/information/api/fetch/all", method = RequestMethod.GET)
     public List<InformationResult> fetchAllInformation() {
 
-        return informationService.fetchAllInformation();
+        return informationRestService.fetchAllInformation();
     }
 
     @RequestMapping(value = "/information/api/fetch/{userID}", method = RequestMethod.GET)
     public InformationResult fetchTopInformation(@PathVariable String userID) {
 
-        return informationService.fetchInformation(userID);
+        return informationRestService.fetchInformation(userID);
     }
 
     @RequestMapping(value = "/information/api/create", method = RequestMethod.POST)
-    public void createInformation(@RequestBody InformationForm informationForm) {
+    public InformationResult createInformation(@RequestBody InformationForm informationForm) {
 
-        informationService.createInformation(informationForm);
+        return informationRestService.createInformation(informationForm);
     }
 
     @RequestMapping(value = "/information/api/update", method = RequestMethod.PUT)
-    public void updateInformation(@RequestBody InformationForm informationForm) {
+    public InformationResult updateInformation(@RequestBody InformationForm informationForm) {
 
-        informationService.createInformation(informationForm);
+        return informationRestService.createInformation(informationForm);
     }
 
     @RequestMapping(value = "/information/api/delete/{userID}", method = RequestMethod.DELETE)
     public void deleteInformation(@PathVariable String userID) {
 
-        informationService.deleteInformation(userID);
+        informationRestService.deleteInformation(userID);
     }
 }

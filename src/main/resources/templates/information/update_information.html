@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Insert title here</title>
+</head>
+<body>
+  <form th:action="@{/information/update}" th:object="${informationForm}" th:method="PUT">
+    <div>更新フォーム</div>
+    <div>
+      <div>
+        <label>ユーザーID</label>
+        <label th:text="*{userID}"></label>
+        <input type="hidden" th:field="*{userID}"/>
+      </div>
+      <div>
+        <label>名前（姓）</label>
+        <input type="text" th:field="*{firstName}"/>
+      </div>
+      <div>
+        <label>名前（名）</label>
+        <input type="text" th:field="*{lastName}"/>
+      </div>
+      <div>
+        <label>有効</label>
+        <input type="checkbox" th:field="*{validUser}"/>
+      </div>
+    </div>
+    <div>
+      <input type="submit" value="更新"/>
+    </div>
+  </form>
+</body>
+</html>

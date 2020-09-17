@@ -1,89 +1,90 @@
 package jp.co.foxbit.horikiri.spring.rest.sample.controller;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.client.RestTemplate;
 
 import jp.co.foxbit.horikiri.spring.rest.sample.model.form.InformationForm;
-import jp.co.foxbit.horikiri.spring.rest.sample.model.result.InformationResult;
+import jp.co.foxbit.horikiri.spring.rest.sample.service.InformationService;
 
 @Controller
 public class InformationController {
 
-//    @Autowired
-    private final RestTemplate restTemplate;
+//  @Autowired
+//  InformationService informationService;
+    private final InformationService informationService;
 
-    private static final String URL_FETCH = "http://localhost:8080/information/api/fetch/%s";
-    private static final String URL_FETCH_ALL = "http://localhost:8080/information/api/fetch/all";
-    private static final String URL_CREATE = "http://localhost:8080/information/api/create";
-    private static final String URL_UPDATE = "http://localhost:8080/information/api/update";
-    private static final String URL_DELETE = "http://localhost:8080/information/api/delete/{userID}";
+    public InformationController(InformationService informationService) {
 
-    public InformationController(RestTemplateBuilder restTemplateBuilder) {
-
-        this.restTemplate = restTemplateBuilder.build();
+        this.informationService = informationService;
     }
 
+    // cURLサンプル：curl -v  http://localhost:8080/information/fetch/all
     @RequestMapping(value = "/information/fetch/all", method = RequestMethod.GET)
     public String fetchAllInformation(Model model) {
 
-        model.addAttribute("informationResultList", Arrays.asList(restTemplate.getForObject(URL_FETCH_ALL, InformationResult[].class)));
+        model.addAttribute("informationResultList", informationService.fetchAllInformationByRest());
+
         return "information/fetch_all_information";
     }
 
+    // cURLサンプル：curl -v  http://localhost:8080/information/fetch/a@foxbit.co.jp
     @RequestMapping(value = "/information/fetch/{userID}", method = RequestMethod.GET)
     public String fetchInformation(@PathVariable String userID, Model model) {
 
-        model.addAttribute("informationResult", restTemplate.getForObject(String.format(URL_FETCH, userID), InformationResult.class));
+        model.addAttribute("informationResult", informationService.fetchInformationByRest(userID));
+
         return "information/fetch_information";
     }
 
-    // cURLサンプル：curl -X POST http://localhost:8080/information/create/e@foxbit.co.jp/ee/e
-    @RequestMapping(value = "/information/create/{userID}/{firstName}/{lastName}", method = RequestMethod.POST)
-    public String createInformation(@PathVariable String userID, @PathVariable String firstName, @PathVariable String lastName, Model model) {
-    // cURLサンプル：curl -X POST http://localhost:8080/information/create/e@foxbit.co.jp?firstName=ee&lastName=e
-//    @RequestMapping(value = "/information/create/{userID}", method = RequestMethod.POST)
-//    public String createInformation(@PathVariable String userID, @RequestParam("firstName") String firstName, @RequestParam("lastName") String lastName) {
+    @RequestMapping(value = "/information/create/form", method = RequestMethod.GET)
+    public String createInformation(Model model) {
 
-        var informationForm = new InformationForm(userID, firstName, lastName,
-                LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
-                LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")), true);
+        model.addAttribute("informationForm", new InformationForm());
 
-        restTemplate.postForObject(URL_CREATE, informationForm, InformationResult.class);
-
-        return "redirect:/information/fetch_all_information";
+        return "information/create_information";
     }
 
+    @RequestMapping(value = "/information/create", method = RequestMethod.POST)
+    public String createInformation(@ModelAttribute InformationForm informationForm, Model model) {
 
-    // cURLサンプル：curl -X PUT http://localhost:8080/information/update/c@foxbit.co.jp/CC/C
-    @RequestMapping(value = "/information/create/{userID}/{firstName}/{lastName}", method = RequestMethod.PUT)
-    public String updateInformation(@PathVariable String userID, @PathVariable String firstName, @PathVariable String lastName, Model model) {
+        informationService.createInformationByRest(informationForm);
 
-        var informationResult = restTemplate.getForObject(String.format(URL_FETCH, userID), InformationResult.class);
-
-        var informationForm = new InformationForm(userID, firstName, lastName,
-                informationResult.getCreatedAt(),
-                LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")), true);
-
-        restTemplate.put(URL_UPDATE, informationForm);
-
-        return "redirect:/information/fetch_all_information";
+        return "redirect:/information/fetch/all";
     }
 
-    // cURLサンプル：curl -X DELETE http://localhost:8080/information/delete/c@foxbit.co.jp
+    @RequestMapping(value = "/information/update/form/{userID}", method = RequestMethod.GET)
+    public String updateInformation(@PathVariable String userID, Model model) {
+
+        model.addAttribute("informationForm", new InformationForm(informationService.fetchInformationByRest(userID)));
+
+        return "information/update_information";
+    }
+
+    @RequestMapping(value = "/information/update", method = RequestMethod.PUT)
+    public String updateInformationRest(@ModelAttribute InformationForm informationForm, Model model) {
+
+        informationService.updateInformationByRest(informationForm);
+
+        return "redirect:/information/fetch/all";
+    }
+
+    @RequestMapping(value = "/information/delete/form/{userID}", method = RequestMethod.GET)
+    public String deleteInformation(@PathVariable String userID, Model model) {
+
+        model.addAttribute("informationForm", new InformationForm(informationService.fetchInformationByRest(userID)));
+
+        return "information/delete_information";
+    }
+
     @RequestMapping(value = "/information/delete/{userID}", method = RequestMethod.DELETE)
     public String deleteInformation(@PathVariable String userID) {
 
-        restTemplate.delete(URL_DELETE, userID);
+        informationService.deleteInformationByRest(userID);
 
-        return "redirect:/information/fetch_all_information";
+        return "redirect:/information/fetch/all";
     }
 }

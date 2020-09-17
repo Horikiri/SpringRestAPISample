@@ -1,6 +1,7 @@
 package jp.co.foxbit.horikiri.spring.rest.sample.model.result;
 
 import jp.co.foxbit.horikiri.spring.rest.sample.model.db.InformationModel;
+import jp.co.foxbit.horikiri.spring.rest.sample.model.form.InformationForm;
 
 public class InformationResult {
 
@@ -68,24 +69,23 @@ public class InformationResult {
 
     }
 
-    public InformationResult(String userID, String firstName, String lastName, String createdAt, String modifiedAt,
-            boolean validUser) {
+    public InformationResult(InformationModel informationModel) {
 
-        this.userID = userID;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.createdAt = createdAt;
-        this.modifiedAt = modifiedAt;
-        this.validUser = validUser; 
+        this.userID = informationModel.getUserID();
+        this.firstName = informationModel.getFirstName();
+        this.lastName = informationModel.getLastName();
+        this.createdAt = informationModel.getCreatedAt();
+        this.modifiedAt = informationModel.getModifiedAt();
+        this.validUser = informationModel.getValidUser(); 
     }
 
-    public InformationResult(InformationModel informationMmodel) {
+    public InformationResult(InformationForm informationForm) {
 
-        this.userID = informationMmodel.getUserID();
-        this.firstName = informationMmodel.getFirstName();
-        this.lastName = informationMmodel.getLastName();
-        this.createdAt = informationMmodel.getCreatedAt();
-        this.modifiedAt = informationMmodel.getModifiedAt();
-        this.validUser = informationMmodel.getValidUser(); 
+        this.userID = informationForm.getUserID();
+        this.firstName = informationForm.getFirstName();
+        this.lastName = informationForm.getLastName();
+        this.createdAt = informationForm.getCreatedAt();
+        this.modifiedAt = informationForm.getModifiedAt();
+        this.validUser = informationForm.getValidUser(); 
     }
 }

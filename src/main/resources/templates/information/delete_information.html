@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Insert title here</title>
+</head>
+<body>
+  <form th:action="@{/information/delete/{userID}(userID=*{userID})}" th:object="${informationForm}" th:method="DELETE">
+    <div>更新フォーム</div>
+    <div>
+      <div>
+        <label>ユーザーID</label>
+        <label th:text="*{userID}"></label>
+      </div>
+      <div>
+        <label>名前</label>
+        <label th:text="|*{firstName} *{lastName}|"></label>
+      </div>
+      <div>
+        <label>有効</label>
+        <input type="checkbox" th:field="*{validUser}" disabled/>
+      </div>
+    </div>
+    <div>
+      <input type="submit" value="削除"/>
+    </div>
+  </form>
+</body>
+</html>

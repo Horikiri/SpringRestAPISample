@@ -2,60 +2,66 @@ package jp.co.foxbit.horikiri.spring.rest.sample.service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
+import org.springframework.boot.web.client.RestTemplateBuilder;
 //import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
-import jp.co.foxbit.horikiri.spring.rest.sample.model.db.InformationModel;
 import jp.co.foxbit.horikiri.spring.rest.sample.model.form.InformationForm;
 import jp.co.foxbit.horikiri.spring.rest.sample.model.result.InformationResult;
 
 @Service
 public class InformationService {
 
-    private Map<String, InformationModel> informationModels = new HashMap<String, InformationModel>();
+    //  @Autowired
+    private final RestTemplate restTemplate;
 
-    public InformationService() {
+    private static final String URL_FETCH = "http://localhost:8080/information/api/fetch/%s";
+    private static final String URL_FETCH_ALL = "http://localhost:8080/information/api/fetch/all";
+    private static final String URL_CREATE = "http://localhost:8080/information/api/create";
+    private static final String URL_UPDATE = "http://localhost:8080/information/api/update";
+    private static final String URL_DELETE = "http://localhost:8080/information/api/delete/{userID}";
 
-        this.informationModels.put("a@foxbit.co.jp", new InformationModel("a@foxbit.co.jp", "AA", "A",
-                LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
-                LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")), true));
-        this.informationModels.put("b@foxbit.co.jp", new InformationModel("b@foxbit.co.jp", "BB", "B",
-                LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
-                LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")), true));
-        this.informationModels.put("c@foxbit.co.jp", new InformationModel("c@foxbit.co.jp", "CC", "C",
-                LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
-                LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")), true));
+    public InformationService(RestTemplateBuilder restTemplateBuilder) {
+ 
+        restTemplate = restTemplateBuilder.build();
     }
 
-    public List<InformationResult> fetchAllInformation() {
+    public List<InformationResult> fetchAllInformationByRest() {
 
-        return informationModels.entrySet().stream()
-                .map(i -> new InformationResult(i.getValue()))
-                .collect(Collectors.toList());
+        return Arrays.asList(restTemplate.getForObject(URL_FETCH_ALL, InformationResult[].class));
     }
 
-    public InformationResult fetchInformation(String userID) {
+    public InformationResult fetchInformationByRest(String userID) {
 
-        return new InformationResult(informationModels.get(userID));
+        return restTemplate.getForObject(String.format(URL_FETCH, userID), InformationResult.class);
     }
 
-    public void createInformation(InformationForm informationForm) {
+    public void createInformationByRest(InformationForm informationForm) {
 
-        this.informationModels.put(informationForm.getUserID(), new InformationModel(informationForm));
+
+        informationForm.setCreatedAt(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        informationForm.setModifiedAt(informationForm.getCreatedAt());
+        informationForm.setValidUser(true);
+
+        restTemplate.postForObject(URL_CREATE, informationForm, InformationResult.class);
     }
 
-    public void deleteInformation(String userID) {
+    public void updateInformationByRest(InformationForm informationForm) {
 
-        this.informationModels.remove(userID);
+        var informationResult = restTemplate.getForObject(String.format(URL_FETCH, informationForm.getUserID()), InformationResult.class);
+
+        informationForm.setCreatedAt(informationResult.getCreatedAt());
+        informationForm.setModifiedAt(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+
+        restTemplate.put(URL_UPDATE, informationForm);
     }
 
-    public void updateInformation(InformationForm informationForm) {
+    public void deleteInformationByRest(String userID) {
 
-        this.informationModels.replace(informationForm.getUserID(), new InformationModel(informationForm));
+        restTemplate.delete(URL_DELETE, userID);
     }
 }
